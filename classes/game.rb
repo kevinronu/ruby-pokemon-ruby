@@ -41,17 +41,17 @@ class Game
          "This world is inhabited by creatures called POKEMON! For some\n" \
          "people, POKEMON are pets. Others use them for fights. Myself...\n" \
          "I study POKEMON as a profession."
-    name = get_input(prompt: "First, what is your name?")
+    name = get_input(prompt: "First, what is your name?", msg: "Write your name")
     puts "Right! So your name is #{name.upcase}!\n" \
          "Your very own POKEMON legend is about to unfold! A world\n" \
          "of dreams and adventures with POKEMON awaits! Let's go!\n" \
          "Here, #{name}! There are 3 POKEMON here! Haha!\n" \
          "When I was young, I was a serious POKEMON trainer.\n"
     initial_pokemon = get_with_options(prompt: "In my old age, I have only 3 left, but you can have one! Choose",
-                                       options: ["Bulbasaur", "Charmander", "Squirtle"], msg: "Invalid option",
+                                       options: ["Bulbasaur", "Charmander", "Squirtle"], msg: "Choose one of the three",
                                        capitalize: true)
     puts "You selected #{initial_pokemon.upcase}. Great choice!"
-    pokemon_name = get_input(prompt: "Give your pokemon a name?")
+    pokemon_name = get_input(prompt: "Give your pokemon a name?", required: false)
     @player = Player.new(name: name, pokemon_name: pokemon_name, species_pokemon: initial_pokemon, level: 1)
     puts "#{name.upcase}, raise your young #{@player.pokemon.name.upcase} by making it fight!\n" \
          "When you feel ready you can challenge BROCK, the PEWTER's GYM LEADER"
@@ -59,30 +59,30 @@ class Game
 
   def train
     bot = Bot.new
-    battle = Battle.new(@player, bot)
+    battle = Battle.new(player: @player, bot: bot)
     puts "\n#{@player.name} challenge #{bot.name} for training"
     battle.start
   end
 
   def challenge_leader
-    leader = Player.new("Brock", "", "Onix", 10)
-    battle = Battle.new(@player, leader)
+    leader = Bot.new(name: "Brock", pokemon_name: "", species_pokemon: "Onix", level: 10)
+    battle = Battle.new(player: @player, bot: leader)
     puts "\n#{@player.name} challenge the Gym Leader #{leader.name} for a fight!"
     battle.start
   end
 
   def show_stats
-    puts "\n#{@player.pokemon.name}:" \
-         "Kind: #{@player.pokemon.species}" \
-         "Level: #{@player.pokemon.level}" \
-         "Type: fire" \
-         "Stats:" \
-         "HP: #{@player.pokemon.stats[:hp]}" \
-         "Attack: #{@player.pokemon.stats[:attack]}" \
-         "Defense: #{@player.pokemon.stats[:defense]}" \
-         "Special Attack: #{@player.pokemon.stats[:special_attack]}" \
-         "Special Defense: #{@player.pokemon.stats[:special_defense]}" \
-         "Speed: #{@player.pokemon.stats[:speed]}" \
+    puts "\n#{@player.pokemon.name}:\n" \
+         "Kind: #{@player.pokemon.species}\n" \
+         "Level: #{@player.pokemon.level}\n" \
+         "Type: #{@player.pokemon.type.join(', ')}\n" \
+         "Stats:\n" \
+         "HP: #{@player.pokemon.stats[:hp]}\n" \
+         "Attack: #{@player.pokemon.stats[:attack]}\n" \
+         "Defense: #{@player.pokemon.stats[:defense]}\n" \
+         "Special Attack: #{@player.pokemon.stats[:special_attack]}\n" \
+         "Special Defense: #{@player.pokemon.stats[:special_defense]}\n" \
+         "Speed: #{@player.pokemon.stats[:speed]}\n" \
          "Experience Points: #{@player.pokemon.experience_points}"
   end
 

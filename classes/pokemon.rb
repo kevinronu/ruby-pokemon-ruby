@@ -18,7 +18,7 @@ class Pokemon
              special_defense: rand(0..31), speed: rand(0..31) }
     @evs = { hp: 0, attack: 0, defense: 0, special_attack: 0, special_defense: 0, speed: 0 }
     @experience_points = level == 1 ? 0 : Pokedex::LEVEL_TABLES[@growth_rate][@level - 1]
-    @stats = calculate_stats(@base_stats, @ivs, @evs, @level)
+    @stats = calculate_stats(base_stats: @base_stats, ivs: @ivs, evs: @evs, level: @level)
     @battle_hp = nil
     @battle_move = nil
   end
@@ -37,24 +37,24 @@ class Pokemon
   end
 
   def attack(opponent)
+    critical = 1
     puts "#{name} used #{@battle_move[:name].upcase}!"
     hit = @battle_move[:accuracy] >= rand(1..100)
-
     if hit
       if rand(1..16) <= 1
         critical = 1.5
         puts "It was CRITICAL hit!"
       end
 
-      if multiplier <= 0.5
+      if calc_multiplier(opponent) <= 0.5
         puts "It's not very effective..."
-      elsif multiplier >= 1.5
+      elsif calc_multiplier(opponent) >= 1.5
         puts "It's super effective!"
-      elsif multiplier.zero?
+      elsif calc_multiplier(opponent).zero?
         puts "It doesn't affect #{opponent.name}!"
       end
 
-      damage = (damage * critical * multiplier).floor
+      damage = (calc_damage(opponent) * critical * calc_multiplier(opponent)).floor
       opponent.receive_damage(damage)
       puts "And it hit #{opponent.name} with #{damage} damage"
       puts("-" * 50)
@@ -75,35 +75,34 @@ class Pokemon
     amount = defeat_pokemon.effort_points[:amount]
     hash = { type => amount } # { speed: 1 }
     @evs.merge!(hash) { |_key, old_value, new_value| old_value + new_value }
-    @stats = calculate_stats(@base_stats, @ivs, @evs, @level)
+    @stats = calculate_stats(base_stats: @base_stats, ivs: @ivs, evs: @evs, level: @level)
   end
 
   private
 
-  def calculate_stat(base_stats:, ivs:, evs:, level:, stat:)
-    addend1 = stat == "hp" ? level : 0
-    addend2 = stat == "hp" ? 10 : 5
-
+  def calc_stat(base_stats:, ivs:, evs:, level:, stat:)
+    addend1 = stat == :hp ? level : 0
+    addend2 = stat == :hp ? 10 : 5
     (((((2 * base_stats[stat]) + ivs[stat] + evs[stat]) * level) / 100) + addend1 + addend2).floor
   end
 
   def calculate_stats(base_stats:, ivs:, evs:, level:)
-    { hp: calculate_stat(base_stats, ivs, evs, level, stat: "hp"),
-      attack: calculate_stat(base_stats, ivs, evs, level, stat: "attack"),
-      defense: calculate_stat(base_stats, ivs, evs, level, stat: "defense"),
-      special_attack: calculate_stat(base_stats, ivs, evs, level, stat: "special_attack"),
-      special_defense: calculate_stat(base_stats, ivs, evs, level, stat: "special_defense"),
-      speed: calculate_stat(base_stats, ivs, evs, level, stat: "speed") }
+    { hp: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :hp),
+      attack: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :attack),
+      defense: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :defense),
+      special_attack: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :special_attack),
+      special_defense: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :special_defense),
+      speed: calc_stat(base_stats: base_stats, ivs: ivs, evs: evs, level: level, stat: :speed) }
   end
 
-  def damage
+  def calc_damage(opponent)
     boolean = Pokedex::SPECIAL_MOVE_TYPE.include?(@battle_move[:type])
-    attack_type = boolean ? special_attack : attack
-    defense_type = boolean ? special_defense : defense
+    attack_type = boolean ? :special_attack : :attack
+    defense_type = boolean ? :special_defense : :defense
     ((((2 * @level / 5.0) + 2).floor * @stats[attack_type] * @battle_move[:power] / opponent.stats[defense_type]).floor / 50.0).floor + 2
   end
 
-  def multiplier
+  def calc_multiplier(opponent)
     multiplier = 1
     Pokedex::TYPE_MULTIPLIER.each do |type|
       next unless type[:user] == @battle_move[:type]

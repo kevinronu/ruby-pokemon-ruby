@@ -14,7 +14,7 @@ class Battle
     @player_pok.prepare_for_battle
     @bot_pok.prepare_for_battle
     puts "#{@bot.name} has a #{@bot_pok.name} level #{@bot_pok.level}"
-    decision = get_with_options(prompt: "\nWhat do you want to do now?", options: ["fight", "leave"])
+    decision = get_with_options(prompt: "\nWhat do you want to do now?", msg: "Invalid option", options: ["fight", "leave"])
     if decision == "fight"
       initial_battle
       battle_loop
@@ -43,7 +43,7 @@ class Battle
       @player.select_move
       @bot.select_move
 
-      first = select_first(@player_pok, @bot_pok)
+      first = select_first(player_pok: @player_pok, bot_pok: @bot_pok)
       second = first == @player_pok ? @bot_pok : @player_pok
 
       puts("-" * 50)
@@ -52,15 +52,15 @@ class Battle
       break if @player_pok.fainted? || @bot_pok.fainted?
 
       puts "\n#{@player.name}'s #{@player_pok.name} - Level #{@player_pok.level}"
-      puts "HP: #{@player_pok.hp}"
+      puts "HP: #{@player_pok.battle_hp}"
       puts "#{@bot.name}'s #{@bot_pok.name} - Level #{@bot_pok.level}"
-      puts "HP: #{@bot_pok.hp}\n\n"
+      puts "HP: #{@bot_pok.battle_hp}\n\n"
     end
   end
 
   def select_first(player_pok:, bot_pok:)
-    player_move = player_pok.move
-    bot_move = bot_pok.move
+    player_move = player_pok.battle_move
+    bot_move = bot_pok.battle_move
 
     return player_pok if player_move[:priority] > bot_move[:priority]
     return bot_pok if player_move[:priority] < bot_move[:priority]
@@ -79,8 +79,8 @@ class Battle
     puts "#{@player.name}'s sent out #{@player_pok.name.upcase}!"
     puts "#{'-' * 19}Battle Start!#{'-' * 19}"
     puts "\n#{@player.name}'s #{@player_pok.name} - Level #{@player_pok.level}"
-    puts "HP: #{@player_pok.hp}"
+    puts "HP: #{@player_pok.battle_hp}"
     puts "#{@bot.name}'s #{@bot_pok.name} - Level #{@bot_pok.level}"
-    puts "HP: #{@bot_pok.hp}\n\n"
+    puts "HP: #{@bot_pok.battle_hp}\n\n"
   end
 end
