@@ -99,7 +99,8 @@ class Pokemon
     boolean = Pokedex::SPECIAL_MOVE_TYPE.include?(@battle_move[:type])
     attack_type = boolean ? :special_attack : :attack
     defense_type = boolean ? :special_defense : :defense
-    ((((2 * @level / 5.0) + 2).floor * @stats[attack_type] * @battle_move[:power] / opponent.stats[defense_type]).floor / 50.0).floor + 2
+    var = (((2 * @level / 5.0) + 2).floor * @stats[attack_type] * @battle_move[:power] / opponent.stats[defense_type])
+    (var.floor / 50.0).floor + 2
   end
 
   def calc_multiplier(opponent)

@@ -14,7 +14,8 @@ class Battle
     @player_pok.prepare_for_battle
     @bot_pok.prepare_for_battle
     puts "#{@bot.name} has a #{@bot_pok.name} level #{@bot_pok.level}"
-    decision = get_with_options(prompt: "\nWhat do you want to do now?", msg: "Invalid option", options: ["fight", "leave"])
+    decision = get_with_options(prompt: "\nWhat do you want to do now?", msg: "Invalid option",
+                                options: ["fight", "leave"])
     if decision == "fight"
       initial_battle
       battle_loop
