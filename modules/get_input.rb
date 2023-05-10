@@ -18,4 +18,16 @@ module GetInput
     end
     puts ""
   end
+
+  def get_with_options(prompt, options)
+    input = ""
+    until options.include?(input)
+      puts prompt.capitalize
+      print_options(options)
+      print "> "
+      input = gets.chomp.downcase
+    end
+    puts ""
+    input
+  end
 end
