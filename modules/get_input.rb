@@ -1,5 +1,5 @@
 module GetInput
-  def get_input(prompt:, msg: "", required: true, color: :default)
+  def get_input(prompt:, msg: "", required: true, color: :light_black)
     print "#{prompt}: ".colorize(color)
     input = gets.chomp
     return input unless required

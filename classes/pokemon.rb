@@ -1,4 +1,4 @@
-# require neccesary files
+require "colorize"
 require_relative "../pokedex/pokemons"
 
 class Pokemon
