@@ -64,6 +64,21 @@ class Pokemon
     end
   end
 
+  def increase_stats(defeat_pokemon)
+    amount = (defeat_pokemon.base_exp * defeat_pokemon.level / 7.0).floor
+    @experience_points += amount
+    puts "#{@name} gained #{amount} experience points"
+    if @experience_points > Pokedex::LEVEL_TABLES[@growth_rate][@level]
+      @level += 1
+      puts "#{@name} reached level #{@level}!"
+    end
+    type = defeat_pokemon.effort_points[:type]
+    amount = defeat_pokemon.effort_points[:amount]
+    hash = { type => amount } # { speed: 1 }
+    @evs.merge!(hash) { |_key, old_value, new_value| old_value + new_value }
+    @stats = calculate_stats(@base_stats, @ivs, @evs, @level)
+  end
+
   private
 
   def calculate_stat(base_stats:, ivs:, evs:, level:, stat:)
