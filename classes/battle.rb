@@ -46,7 +46,7 @@ class Battle
       first = select_first(@player_pok, @bot_pok)
       second = first == @player_pok ? @bot_pok : @player_pok
 
-      puts ("-" * 50).to_s
+      puts("-" * 50)
       first.attack(second)
       second.attack(first) unless second.fainted?
       break if @player_pok.fainted? || @bot_pok.fainted?

@@ -1,12 +1,14 @@
 module GetInput
-  def get_input(prompt:, msg: "", required: true, color: :light_black)
-    print "#{prompt}: ".colorize(color)
+  def get_input(prompt:, msg: "", required: true)
+    puts prompt
+    print "> "
     input = gets.chomp
     return input unless required
 
     while input.empty?
       puts msg
-      print "#{prompt}: ".colorize(color)
+      puts prompt
+      print "> "
       input = gets.chomp
     end
     input
@@ -19,13 +21,16 @@ module GetInput
     puts ""
   end
 
-  def get_with_options(prompt:, options:, capitalize: false)
-    input = ""
+  def get_with_options(prompt:, options:, msg: "", capitalize: false)
+    puts prompt
+    print_options(options)
+    print "> "
+    input = gets.chomp
     until options.include?(input)
-      puts prompt.capitalize
+      puts msg
       print_options(options)
       print "> "
-      input = gets.chomp.capitalize.downcase
+      input = gets.chomp.downcase
       input = input.capitalize if capitalize
     end
     puts ""

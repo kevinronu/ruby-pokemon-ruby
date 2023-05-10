@@ -1,4 +1,3 @@
-require "colorize"
 require_relative "../pokedex/pokemons"
 
 class Pokemon
@@ -58,7 +57,7 @@ class Pokemon
       damage = (damage * critical * multiplier).floor
       opponent.receive_damage(damage)
       puts "And it hit #{opponent.name} with #{damage} damage"
-      puts ("-" * 50).to_s
+      puts("-" * 50)
     else
       puts "But it MISSED!"
     end
