@@ -1,4 +1,4 @@
-module GetInput
+module Utils
   def get_input(prompt:, msg: "", required: true)
     puts prompt
     print "> "
@@ -25,7 +25,8 @@ module GetInput
     puts prompt
     print_options(options)
     print "> "
-    input = gets.chomp
+    input = gets.chomp.downcase
+    input = input.capitalize if capitalize
     until options.include?(input)
       puts msg
       print_options(options)
@@ -35,5 +36,22 @@ module GetInput
     end
     puts ""
     input
+  end
+
+  def pokemon_color(type)
+    case type[0]
+    when :grass
+      :light_green
+    when :fire
+      :light_red
+    when :water
+      :light_blue
+    when :electric
+      :light_yellow
+    when :rock
+      :black
+    else
+      :light_white
+    end
   end
 end

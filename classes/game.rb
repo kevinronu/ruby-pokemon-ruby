@@ -1,9 +1,9 @@
 require "colorize"
-require_relative "../modules/get_input"
+require_relative "../modules/utils"
 require_relative "player"
 
 class Game
-  include GetInput
+  include Utils
 
   def initialize
     @player = nil
@@ -42,18 +42,18 @@ class Game
          "people, POKEMON are pets. Others use them for fights. Myself...\n" \
          "I study POKEMON as a profession."
     name = get_input(prompt: "First, what is your name?", msg: "Write your name")
-    puts "Right! So your name is #{name.upcase}!\n" \
-         "Your very own POKEMON legend is about to unfold! A world\n" \
+    puts "Right! So your name is #{name.upcase.colorize(:light_white)}!\n" \
+         "\nYour very own POKEMON legend is about to unfold! A world\n" \
          "of dreams and adventures with POKEMON awaits! Let's go!\n" \
          "Here, #{name}! There are 3 POKEMON here! Haha!\n" \
          "When I was young, I was a serious POKEMON trainer.\n"
     initial_pokemon = get_with_options(prompt: "In my old age, I have only 3 left, but you can have one! Choose",
                                        options: ["Bulbasaur", "Charmander", "Squirtle"], msg: "Choose one of the three",
                                        capitalize: true)
-    puts "You selected #{initial_pokemon.upcase}. Great choice!"
+    puts "You selected #{initial_pokemon.upcase.colorize(:light_white)}. Great choice!"
     pokemon_name = get_input(prompt: "Give your pokemon a name?", required: false)
     @player = Player.new(name: name, pokemon_name: pokemon_name, species_pokemon: initial_pokemon, level: 1)
-    puts "#{name.upcase}, raise your young #{@player.pokemon.name.upcase} by making it fight!\n" \
+    puts "#{@player.name}, raise your young #{@player.pokemon.name} by making it fight!\n" \
          "When you feel ready you can challenge BROCK, the PEWTER's GYM LEADER"
   end
 

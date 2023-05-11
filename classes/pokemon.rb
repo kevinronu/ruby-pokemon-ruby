@@ -1,6 +1,8 @@
 require_relative "../pokedex/pokemons"
+require_relative "../modules/utils"
 
 class Pokemon
+  include Utils
   attr_reader :name, :species, :level, :moves, :stats, :experience_points, :base_exp, :effort_points, :battle_hp, :type
   attr_accessor :battle_move
 
@@ -9,6 +11,7 @@ class Pokemon
     @species = species
     @level = level
     @type = Pokedex::POKEMONS[@species][:type]
+    @name = @name.colorize(pokemon_color(@type))
     @base_exp = Pokedex::POKEMONS[@species][:base_exp]
     @effort_points = Pokedex::POKEMONS[@species][:effort_points]
     @growth_rate = Pokedex::POKEMONS[@species][:growth_rate]
@@ -71,9 +74,7 @@ class Pokemon
       @level += 1
       puts "#{@name} reached level #{@level}!"
     end
-    type = defeat_pokemon.effort_points[:type]
-    amount = defeat_pokemon.effort_points[:amount]
-    hash = { type => amount } # { speed: 1 }
+    hash = { defeat_pokemon.effort_points[:type] => defeat_pokemon.effort_points[:amount] } # { speed: 1 }
     @evs.merge!(hash) { |_key, old_value, new_value| old_value + new_value }
     @stats = calculate_stats(base_stats: @base_stats, ivs: @ivs, evs: @evs, level: @level)
   end

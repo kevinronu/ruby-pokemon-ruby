@@ -1,7 +1,7 @@
-require_relative "../modules/get_input"
+require_relative "../modules/utils"
 
 class Battle
-  include GetInput
+  include Utils
 
   def initialize(player:, bot:)
     @player = player
